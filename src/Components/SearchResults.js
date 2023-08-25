@@ -2,25 +2,39 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Loader from "./Loader";
 import { useLocation } from "react-router-dom";
+import leftArrow from "../images/LeftArrow.png";
+import rightArrow from "../images/LeftArrow.png";
 
 export default function SearchResults() {
   var [news, setNews] = useState([]);
   var [loading, setLoading] = useState(true);
   var location = useLocation();
   var item = location.state.item;
+  var [page, setPage] = useState(1);
+  var [totalPages, setTotalPage] = useState(0);
 
   useEffect(() => {
     async function getData() {
       var response = await fetch(
-        `https://newsapi.org/v2/everything?q=${item}&apiKey=ebecd70bd7d54d23bac375f5e3948872`
+        `https://newsapi.org/v2/everything?q=${item}&pageSize=10&page=${page}&apiKey=ebecd70bd7d54d23bac375f5e3948872`
       );
       var data = await response.json();
       console.log(data);
       setNews(data.articles);
+      setTotalPage(data.totalResults / 12);
       setLoading(false);
     }
     getData();
-  }, [item]);
+  }, [item, page]);
+
+  function nextPage() {
+    setLoading(true);
+    setPage(++page);
+  }
+  function previousPage() {
+    setLoading(true);
+    setPage(--page);
+  }
   return (
     <div>
       {" "}
@@ -94,6 +108,23 @@ export default function SearchResults() {
         ) : (
           <Loader />
         )}
+      </div>
+      <div className="pageinationContainer">
+        {page > 1 ? (
+          <>
+            <img src={leftArrow} alt="left" onClick={previousPage} />
+          </>
+        ) : null}
+
+        <p>
+          Page {page} of {Math.round(totalPages)}
+        </p>
+
+        {page !== totalPages ? (
+          <>
+            <img src={rightArrow} alt="right" onClick={nextPage} />
+          </>
+        ) : null}
       </div>
     </div>
   );

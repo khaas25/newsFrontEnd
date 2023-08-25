@@ -1,5 +1,5 @@
 var api = {
-  apiLink: "http://localhost:8080/contact",
+  apiLink: "https://newsbackend-rfvg.onrender.com",
 };
 
 module.exports = api;

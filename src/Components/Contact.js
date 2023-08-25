@@ -9,8 +9,8 @@ import "react-notifications/lib/notifications.css";
 import { FormSchema } from "../Validator/Form";
 import { useFormik } from "formik";
 export default function Contact() {
-  function contact(e) {
-    e.preventDefault(); //e means event and refers to form tag, preventDefault stops reloading
+  function contact() {
+    // e.preventDefault(); //e means event and refers to form tag, preventDefault stops reloading - dont need when using yup
     var userName = document.getElementById("w3lName").value;
     var userEmail = document.getElementById("w3lSender").value;
     var phonenumber = document.getElementById("w3lPhone").value;
@@ -25,7 +25,7 @@ export default function Contact() {
       message,
     };
     axios
-      .post(`http://${Config.apiLink}/contact`, payload)
+      .post(`${Config.apiLink}/contact`, payload)
       .then(() => {
         NotificationManager.success("Inquiry Sent");
       })
@@ -33,6 +33,11 @@ export default function Contact() {
         NotificationManager.error("Something went wrong");
         console.log(e);
       });
+    document.getElementById("w3lName").value = "";
+    document.getElementById("w3lSender").value = "";
+    document.getElementById("w3lPhone").value = "";
+    document.getElementById("w3lSubject").value = "";
+    document.getElementById("w3lMessage").value = "";
   }
 
   //   // ===order form Validator=============
@@ -49,7 +54,6 @@ export default function Contact() {
     validationSchema: FormSchema,
     onSubmit: (values) => {
       contact();
-      alert("Message Sent");
     },
   });
   //   // ===RETURN SECTION=============
